@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/kaleanup-indx/m/v2/pkg/config"
 	"github.com/kaleanup-indx/m/v2/pkg/handlers"
+	"github.com/kaleanup-indx/m/v2/pkg/render"
 )
 
 const portNumber = ":8080"
@@ -12,16 +15,39 @@ const portNumber = ":8080"
 // main the main function of the applicaiton.
 func main() {
 
-	http.HandleFunc(
-		"/",
-		handlers.Home,
-	)
+	var app config.AppConfig
 
-	http.HandleFunc(
-		"/about",
-		handlers.About,
-	)
+	tc, err := render.CreateTemplateCache()
+	if err != nil {
+		log.Fatal("cannot create template cache")
+	}
+	app.TemplateCache = tc
+	app.UseCache = false
+
+	repo := handlers.NewRepo(&app)
+	handlers.NewHandlers(repo)
+
+	render.NewTemplates(&app)
+
+	// http.HandleFunc(
+	// 	"/",
+	// 	handlers.Repo.Home,
+	// )
+
+	// http.HandleFunc(
+	// 	"/about",
+	// 	handlers.Repo.About,
+	// )
 
 	fmt.Printf((fmt.Sprintf("Starting application on port %s", portNumber)))
-	http.ListenAndServe(portNumber, nil)
+	// http.ListenAndServe(portNumber, nil)
+
+	srv := http.Server{
+		Addr:    portNumber,
+		Handler: routes(&app),
+	}
+
+	err = srv.ListenAndServe()
+	log.Fatal(err)
+
 }
