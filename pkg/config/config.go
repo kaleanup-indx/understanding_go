@@ -7,7 +7,7 @@ import (
 
 // AppConfig holds the application config
 type AppConfig struct {
-	useCache      bool
+	UseCache      bool
 	TemplateCache map[string]*template.Template
 	InfoLog       *log.Logger
 }
