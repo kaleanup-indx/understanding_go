@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/kaleanup-indx/m/v2/pkg/config"
+	"github.com/kaleanup-indx/m/v2/pkg/models"
 )
 
 const tmplDirectoryName = "./templates/"
@@ -21,7 +22,7 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 	if app.UseCache {
 		//create template cache
@@ -40,7 +41,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	//create a buffer
 	buf := new(bytes.Buffer)
 
-	err := t.Execute(buf, nil)
+	err := t.Execute(buf, td)
 	if err != nil {
 		log.Println(err)
 	}

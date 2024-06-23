@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kaleanup-indx/m/v2/pkg/config"
+	"github.com/kaleanup-indx/m/v2/pkg/models"
 	"github.com/kaleanup-indx/m/v2/pkg/render"
 )
 
@@ -29,10 +30,11 @@ func NewHandlers(r *Repository) {
 
 // Home is the home page handler
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home")
+	render.RenderTemplate(w, "home", &models.TemplateData{})
 }
 
 // About is the about page handler
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "about")
+	stringMap := map[string]string{"test": "Hello, again!"}
+	render.RenderTemplate(w, "about", &models.TemplateData{StringMap: stringMap})
 }
